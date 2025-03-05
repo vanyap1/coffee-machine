@@ -25,12 +25,16 @@ from kivy.uix.popup import Popup
 from kivy.config import Config
 from kivy.core.window import Window
 from kivy.factory import Factory
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.widget import Widget
+
 
 from remoteCtrlServer.httpserver import start_server_in_thread
 from remoteCtrlServer.udpService import UdpAsyncClient
 
 from backgroundServices.backgroundProcessor import BackgroundWorker
 
+from drinkItemMenu import DrinkItemMenu
 
 remCtrlPort = 8080
 
@@ -58,48 +62,72 @@ class PopupMenu(BoxLayout):
     def dismiss(self):
         self.parent.parent.dismiss()
 
+class GifWidget(Widget):
+    def __init__(self, **kwargs):
+        super(GifWidget, self).__init__(**kwargs)
+        self.image = Image(source='grogu-active.gif', anim_delay=0.02)
+        self.add_widget(self.image)
+        self.image.size_hint = (None, None)
+        self.image.size = (640/2, 360/2)  # Adjust the size as needed
+        self.image.pos_hint = {'right': 1, 'bottom': 1}
+        self.image.pos = (Window.width - self.image.width, 65)
+
+
+
 class MainScreen(FloatLayout):
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.backProc = BackgroundWorker()
         self.backProc.startProc()
         
-        
         self.background_image = Image(source='images/bg_d.jpg', size=self.size)
         self.add_widget(self.background_image)
         
         self.bottom_bar = BottomBar()
         self.add_widget(self.bottom_bar)
+        self.menuElements = [
+            ["test1", "americano.png"],
+            ["test2", "Espresso.png"],
+            ["test3", "Late.png"],
+            ["test4", "Tea+Lemon.png"],
+            ["test5", "Tea+RASPBERY.png"]
+        ]
+        self.create_menu(self.menuElements)
 
-        
-
-        ## Server start
-        self.server, self.server_thread = start_server_in_thread(remCtrlPort, self.remCtrlCB, self)
-        self.udpClient = UdpAsyncClient(self)
-        self.udpClient.startListener(udpReportService.rx_port, self.serverUdpIncomingData)
+        self.gif_widget = GifWidget()
+        self.add_widget(self.gif_widget)
+        self.popup = None
         
         Clock.schedule_interval(lambda dt: self.update_time(), 1)
-
-    
-        self.clock = Label(text='[color=ffffff]22:30:38[/color]', markup = True, font_size=100, pos=(-600, 500) , font_name='fonts/hemi_head_bd_it.ttf')
+        self.clock = Label(text='[color=ffffff]22:30:38[/color]', markup = True, font_size=100, pos=(700, 500) , font_name='fonts/hemi_head_bd_it.ttf')
         self.add_widget(self.clock)
+        
+        
 
-        self.servReport = Label(text='[color=00ffcc]No data[/color]', markup=True, font_size=50, pos=(-100, 300), font_name='fonts/hemi_head_bd_it.ttf', halign='left')
-        self.add_widget(self.servReport)
+    def create_menu(self, menuElements):
+        scroll_view = ScrollView(size_hint=(None, None), size=(220, 800), pos=(0, 200))
+        layout = BoxLayout(orientation='vertical', size_hint_y=None, padding=10, spacing=10)
+        layout.bind(minimum_height=layout.setter('height'))
+        
+        for idx, element in enumerate(menuElements):
+            button = Button(size_hint_y=None, height=150, width=200, background_normal=f'drinks/pr_w640px/{element[1]}', background_down=f'drinks/pr_w640px/{element[1]}')
+            button.bind(on_release=lambda btn, idx=idx: self.on_button_release(idx))
+            layout.add_widget(button)
+        
+        scroll_view.add_widget(layout)
+        self.add_widget(scroll_view)
 
+    def on_button_release(self, button_id):
+        image_source = f'drinks/pr_w800px/{self.menuElements[button_id][1]}'
+        if self.popup is None:
+            self.popup = DrinkItemMenu(image_source)
+            self.popup.open()
+        else:
+            self.popup.update_image(image_source)
+            if not self.popup._window:
+                self.popup.open()
+        
 
-        self.button1 = Button(text='', size_hint=(None, None), size=(192, 192), pos_hint={'center_x': .3, 'center_y': .5},
-                              background_normal='images/switch3_off.png', background_down='images/switch3.png')
-        self.button1.bind(on_release=lambda instance: self.on_button_release("spn:dune:1"))
-        self.add_widget(self.button1)
-
-        self.button2 = Button(text='', size_hint=(None, None), size=(192, 192), pos_hint={'center_x': .7, 'center_y': .5},
-                              background_normal='images/switch3_off.png', background_down='images/switch3.png')
-        self.button2.bind(on_release=lambda instance: self.on_button_release("spn:dune:0"))
-        self.add_widget(self.button2)
-
-    def on_button_release(self, message):
-        self.udpClient.send_data(message, udpReportService.ip, udpReportService.tx_port)
 
 
 
