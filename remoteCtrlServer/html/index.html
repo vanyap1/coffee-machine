@@ -4,17 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Command interface</title>
+    <title>Command Interface</title>
     <link rel="stylesheet" href="styles.css">
     <script>
         function sendCommand(command) {
             const commandText = document.getElementById('commandDropdown').value;
-            const slotName = document.getElementById('slotsDropdown').value;
+            const devAddr = document.getElementById('addrDropdown').value;
+            const bytesHandle = document.getElementById('bytesHandle').value;
+            const cmdArgLine = document.getElementById('commandInput').value;
+            const startRegAddr = document.getElementById('regAddr').value;
+
             let url = '/cmd:';
-            if (slotName) {
-                url += slotName + '/';
-            }
-            url += command;
+            url += command + ';' + devAddr + ';' + startRegAddr + ';' + bytesHandle + ';' + cmdArgLine;
             fetch(url)
                 .then(response => response.text())
                 .then(data => {
@@ -42,40 +43,120 @@
                 return;
             }
         }
+
         function onButtonClick(buttonId) {
             sendCommand(buttonId + '=pressed');
         }
+
+        function saveNotes() {
+            const notesContent = document.getElementById('notes').value;
+            const url = '/cmd:saveNotes:' + encodeURIComponent(notesContent);
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('result').innerText = 'Notes saved: ' + data;
+                })
+                .catch(error => {
+                    document.getElementById('result').innerText = 'Error saving notes: ' + error;
+                });
+        }
+
+        function loadNotes() {
+            const url = '/cmd:getNotes';
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('notes').value = data;
+                })
+                .catch(error => {
+                    document.getElementById('result').innerText = 'Error loading notes: ' + error;
+                });
+        }
+
+        // Завантаження нотаток при відкритті сторінки
+        window.onload = loadNotes;
     </script>
 </head>
 
 <body>
     <div class="container">
-        <h1>Command interface</h1>
+        <h1>i2c Interface</h1>
         <div class="input-group">
-            <select id="slotsDropdown">
-                <option value="">none</option>
-                <option value="slot1">slot1</option>
-                <option value="slot2">slot2</option>
-            </select>
             <select id="commandDropdown">
-                <option value="status">status</option>
-                <option value="cmd">cmd</option>
-                <option value="run">run</option>
+                <option value="i2c-write">i2cw</option>
+                <option value="i2c-read">i2cr</option>
+                <option value="i2c-scan">i2cs</option>
                 <option value="stop">stop</option>
             </select>
+
+            <select id="addrDropdown">
+                <option value="0x12">0x12</option>
+            </select>
+
+            <select id="bytesHandle">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="31">31</option>
+                <option value="32">32</option>
+            </select>
+            <select id="regAddr">
+                <option value="0x00">reg0</option>
+                <option value="0x01">IO1</option>
+                <option value="0x02">IO2</option>
+                <option value="0x03">IO3</option>
+                <option value="0x04">IO4</option>
+                <option value="0x05">IO5</option>
+                <option value="0x06">IO6</option>
+                <option value="0x07">IO7</option>
+                <option value="0x08">IO8</option>
+            </select>
+
             <input type="text" id="commandInput" placeholder="Введіть команду">
             <button onclick="onOkButtonClick()">EXEC</button>
         </div>
-
 
         <div class="result-group">
             <h2>Result:</h2>
             <pre id="result">No data</pre>
         </div>
+
         <div class="button-group">
             <button onclick="onButtonClick('btn0')">Button 0</button>
             <button onclick="onButtonClick('btn1')">Button 1</button>
             <button onclick="onButtonClick('btn2')">Button 2</button>
+        </div>
+
+        <div class="notes-group">
+            <h2>Notes:</h2>
+            <textarea id="notes" class="textarea-notes" placeholder="Write your notes here..."></textarea>
+            <button onclick="saveNotes()">Save Notes</button>
         </div>
     </div>
 </body>

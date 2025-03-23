@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #121212; /* Темний фон */
+    color: #e0e0e0; /* Світлий текст */
     margin: 0;
     padding: 0;
     display: flex;
@@ -10,56 +11,181 @@ body {
 }
 
 .container {
-    background-color: #fff;
+    background-color: #1e1e1e; /* Темно-сірий фон для контейнера */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 500px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    width: 650px;
     text-align: center;
+    border: 1px solid #00bcd4; /* Блакитний контур */
 }
 
-h1 {
+h1, h2 {
+    color: #00ff7f; /* Яскраво-зелений заголовок */
     margin-bottom: 20px;
 }
 
-.input-group {
+.input-group, .result-group, .button-group {
     margin-bottom: 20px;
 }
 
 select, input[type="text"] {
     padding: 10px;
     margin-right: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #00bcd4; /* Блакитний контур */
     border-radius: 4px;
+    background-color: #2a2a2a; /* Темний фон для полів вводу */
+    color: #e0e0e0; /* Світлий текст */
+}
+
+select:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #00ff7f; /* Зелений контур при фокусі */
+    box-shadow: 0 0 5px #00ff7f;
 }
 
 button {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
-    background-color: #007bff;
-    color: #fff;
+    background-color: #00bcd4; /* Блакитний фон кнопки */
+    color: #121212; /* Темний текст */
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
-}
-
-.button-group {
-    margin-top: 20px;
-}
-
-.result-group {
-    text-align: left;
-    margin-bottom: 20px;
+    background-color: #00ff7f; /* Зелений фон при наведенні */
+    transform: scale(1.05); /* Легке збільшення */
 }
 
 pre {
-    background-color: #f8f8f8;
+    background-color: #2a2a2a; /* Темний фон для результатів */
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #00bcd4; /* Блакитний контур */
     border-radius: 4px;
     white-space: pre-wrap;
     word-wrap: break-word;
+    color: #e0e0e0; /* Світлий текст */
+}
+
+a {
+    color: #00bcd4; /* Блакитний текст посилань */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #00ff7f; /* Зелений текст при наведенні */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #00bcd4; /* Блакитний контур */
+    text-align: left;
+}
+
+table th {
+    background-color: #2a2a2a; /* Темний фон для заголовків таблиці */
+    color: #00ff7f; /* Зелений текст */
+}
+
+table td {
+    background-color: #1e1e1e; /* Темний фон для комірок */
+    color: #e0e0e0; /* Світлий текст */
+}
+
+input[type="checkbox"], input[type="radio"] {
+    accent-color: #00bcd4; /* Блакитний акцент для чекбоксів і радіо-кнопок */
+}
+
+textarea {
+    width: 96%;
+    padding: 10px;
+    border: 1px solid #00bcd4; /* Блакитний контур */
+    border-radius: 4px;
+    background-color: #2a2a2a; /* Темний фон */
+    color: #e0e0e0; /* Світлий текст */
+    resize: vertical;
+}
+.textarea-notes {
+    width: 96%;
+    padding: 10px;
+    border: 1px solid #00bcd4; /* Блакитний контур */
+    border-radius: 4px;
+    background-color: #2a2a2a; /* Темний фон */
+    color: #e0e0e0; /* Світлий текст */
+    resize: vertical;
+    height: 200px; /* Збільшена висота для нотаток */
+}
+
+
+
+textarea:focus {
+    outline: none;
+    border-color: #00ff7f; /* Зелений контур при фокусі */
+    box-shadow: 0 0 5px #00ff7f;
+}
+
+button:disabled {
+    background-color: #555555; /* Сірий фон для неактивних кнопок */
+    color: #888888; /* Світло-сірий текст */
+    cursor: not-allowed;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, #00bcd4, #00ff7f);
+    margin: 20px 0;
+}
+
+.card {
+    background-color: #1e1e1e; /* Темний фон для карток */
+    border: 1px solid #00bcd4; /* Блакитний контур */
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.card h3 {
+    color: #00ff7f; /* Зелений текст */
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #e0e0e0; /* Світлий текст */
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Позиція над елементом */
+    left: 50%;
+    margin-left: -60px;
+    border: 1px solid #00bcd4;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
 }
